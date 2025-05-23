@@ -1,6 +1,8 @@
 
 import { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, ScrollView, Image, TextInput } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { TouchableOpacity } from 'react-native';
 import Filtro from './filtro'
 
 const [data, setData] = useState([]);
@@ -8,8 +10,9 @@ const [busqueda, setBusqueda] = useState('');
 const [tipoSeleccionado, setTipoSeleccionado] = useState('All');
 const handleTipoChange = (tipo) => {
     setTipoSeleccionado(tipo);
-    };
-   
+};
+const navigation = useNavigation();
+
 useEffect(() => {
     const obtenerDatos = async () => {
         if (tipoSeleccionado === 'All') {
@@ -53,19 +56,25 @@ export default function Lista() {
             <Filtro onTipoChange={setTipoSeleccionado} />
 
             <View style={styles.lista}>
-                {data.map((pokemon, index) => (
-                    <View key={index} style={styles.item}>
-                        <Text>{pokemon.url.split("/")[6]}</Text>
-                        <Image
-                            source={{
-                                uri:
-                                    `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.url.split("/")[6]}.png`
-                            }}
-                            style={styles.imagen}
-                        />
-                        <Text>{pokemon.name}</Text>
-                    </View>
-                ))}
+                {data.map(<TouchableOpacity
+                    key={index}
+                    style={styles.item}
+                    onPress={() => navigation.navigate('Pokemon', {
+                        nombre: nombre
+                    })} // Redirige con nombre como parámetro
+                >
+                    <Text>{pokemon.url.split("/")[6]} {index}</Text>
+                    <Image
+                        source={{
+                            uri:
+                                `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokem
+on/other/official-artwork/${pokemon.url.split("/")[6]}.png`
+                        }}
+                        style={styles.imagen}
+                    />
+                    <Text>{pokemon.name}</Text>
+                </TouchableOpacity>
+                )}
             </View>
         </ScrollView>
     );
